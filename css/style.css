@@ -1,0 +1,973 @@
+/* =========================================================================
+   STYLE.CSS — Website CV "Editorial Minimalis"
+   -------------------------------------------------------------------------
+   Satu-satunya file CSS kustom. Dipakai bersama Bootstrap 5 (CDN).
+   Daftar isi:
+     01. Variabel warna & tipografi (:root) + dark mode
+     02. Dasar (body, tekstur grain, seleksi, fokus keyboard)
+     03. Tipografi editorial (judul, label mono, paragraf)
+     04. Tautan & tombol
+     05. Navbar
+     06. Layout section & garis pemisah
+     07. Home (hero, banner, fakta, kartu unggulan)
+     08. Foto (grayscale -> berwarna saat hover)
+     09. Halaman Tentang
+     10. Halaman Pengalaman (case study + galeri + modal)
+     11. Halaman Keahlian
+     12. Halaman Kontak (email besar + form)
+     13. Footer
+     14. Animasi masuk (keyframes)
+     15. Responsif tambahan
+     16. prefers-reduced-motion
+   ========================================================================= */
+
+
+/* =========================================================================
+   01. VARIABEL — semua warna disimpan di sini agar mudah diganti
+   ========================================================================= */
+:root {
+  /* Warna */
+  --bg: #f5f3ef;            /* latar off-white */
+  --bg-soft: #ebe8e2;       /* latar sedikit lebih gelap (placeholder, form) */
+  --ink: #141414;           /* teks utama hampir hitam */
+  --muted: #6b6b6b;         /* teks sekunder */
+  --accent: #d4552b;        /* SATU warna aksen: burnt orange */
+  --line: rgba(20, 20, 20, 0.14); /* garis tipis 1px */
+  --on-ink: #f5f3ef;        /* teks di atas latar gelap (tombol solid) */
+
+  /* Tipografi */
+  --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+
+  /* Gerak */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);  /* ease-out yang lembut */
+  --dur: 0.6s;
+
+  /* Override variabel Bootstrap agar komponen bawaan ikut tema */
+  --bs-body-bg: var(--bg);
+  --bs-body-color: var(--ink);
+  --bs-body-font-family: var(--font-sans);
+  --bs-border-color: var(--line);
+  --bs-link-color-rgb: 20, 20, 20;
+  --bs-emphasis-color: var(--ink);
+  --bs-secondary-color: var(--muted);
+}
+
+/* Dark mode otomatis mengikuti pengaturan perangkat pengunjung */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111111;
+    --bg-soft: #1b1b1b;
+    --ink: #eeeeee;
+    --muted: #a3a3a3;
+    --line: rgba(238, 238, 238, 0.14);
+    --on-ink: #111111;
+    --bs-link-color-rgb: 238, 238, 238;
+    color-scheme: dark;
+  }
+}
+
+
+/* =========================================================================
+   02. DASAR
+   ========================================================================= */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem; /* agar anchor (#pengalaman-1) tidak tertutup navbar */
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  position: relative;
+}
+
+/* Tekstur grain sangat tipis: SVG noise (feTurbulence) sebagai lapisan tetap */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;   /* tidak mengganggu klik */
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  body::before { opacity: 0.09; mix-blend-mode: screen; filter: invert(1); }
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+/* Fokus keyboard yang jelas terlihat (aksesibilitas) */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 0;
+  box-shadow: none !important;
+}
+
+/* Tautan "lewati ke konten" untuk pengguna keyboard / screen reader */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 10000;
+  padding: 0.6rem 1rem;
+  background: var(--ink);
+  color: var(--on-ink);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+}
+.skip-link:focus { top: 1rem; color: var(--on-ink); }
+
+hr, .rule {
+  border: 0;
+  border-top: 1px solid var(--line);
+  opacity: 1;
+  margin: 0;
+}
+
+
+/* =========================================================================
+   03. TIPOGRAFI EDITORIAL
+   ========================================================================= */
+h1, h2, h3, h4, .serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--ink);
+  font-optical-sizing: auto;
+}
+
+/* Judul utama ukuran sangat besar, responsif dengan clamp() */
+.display-xl {
+  font-size: clamp(3.25rem, 11vw, 9.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  margin: 0;
+}
+.display-lg {
+  font-size: clamp(2.75rem, 8vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+.section-title {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  margin: 0;
+}
+.title-md {
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  line-height: 1.15;
+}
+
+/* Huruf miring + titik aksen sebagai "tanda tangan" desain */
+.italic { font-style: italic; }
+.dot { color: var(--accent); }
+
+/* Label kecil monospace, huruf kapital, spasi huruf lebar */
+.eyebrow,
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+}
+
+/* Penomoran section bergaya editorial: "01 — Tentang" */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+.section-label .num { color: var(--accent); }
+
+.lede {
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  line-height: 1.5;
+  color: var(--ink);
+  max-width: 38ch;
+}
+.text-muted-ed { color: var(--muted) !important; }
+.measure { max-width: 62ch; }
+
+
+/* =========================================================================
+   04. TAUTAN & TOMBOL
+   ========================================================================= */
+a {
+  color: var(--ink);
+  text-decoration: none;
+}
+a:hover { color: var(--ink); }
+
+/* Garis bawah yang "tumbuh" dari kiri ke kanan saat hover */
+.link-u {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size var(--dur) var(--ease), color 0.3s;
+  padding-bottom: 2px;
+}
+.link-u:hover,
+.link-u:focus-visible { background-size: 100% 1px; }
+
+/* Varian: garis tipis selalu ada, garis aksen tumbuh di atasnya */
+.link-line {
+  background-image:
+    linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--line), var(--line));
+  background-repeat: no-repeat;
+  background-position: 0 100%, 0 100%;
+  background-size: 0% 1px, 100% 1px;
+  transition: background-size var(--dur) var(--ease);
+  padding-bottom: 3px;
+}
+.link-line:hover,
+.link-line:focus-visible { background-size: 100% 1px, 100% 1px; }
+
+/* Tombol: sudut tegas, label mono kapital */
+.btn-ed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.95rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  transition: background-color 0.35s var(--ease), color 0.35s var(--ease), border-color 0.35s;
+}
+.btn-ed .arrow {
+  display: inline-block;
+  transition: transform 0.45s var(--ease);
+}
+.btn-ed:hover .arrow { transform: translateX(4px); }
+.btn-ed:hover .arrow-down { transform: translateY(3px); }
+
+.btn-solid { background: var(--ink); color: var(--on-ink); }
+.btn-solid:hover,
+.btn-solid:focus-visible { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.btn-outline { background: transparent; color: var(--ink); }
+.btn-outline:hover,
+.btn-outline:focus-visible { background: var(--ink); color: var(--on-ink); }
+
+
+/* =========================================================================
+   05. NAVBAR — logo kiri, menu kanan, penanda halaman aktif
+   ========================================================================= */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background-color: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header .navbar { padding-block: 0.9rem; }
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+}
+.brand img { width: 40px; height: 40px; }
+.brand-name {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink);
+}
+
+.site-header .nav-link {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  padding: 0.5rem 0 !important;
+  margin-left: 2rem;
+  transition: color 0.3s;
+}
+.site-header .nav-link .nav-num {
+  color: var(--accent);
+  margin-right: 0.4rem;
+  font-size: 0.65rem;
+}
+/* garis bawah tumbuh dari kiri */
+.site-header .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0.2rem;
+  width: 100%;
+  height: 1px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+.site-header .nav-link:hover,
+.site-header .nav-link:focus-visible { color: var(--ink); }
+.site-header .nav-link:hover::after { transform: scaleX(1); }
+
+/* Halaman aktif (ditandai dengan aria-current="page") */
+.site-header .nav-link[aria-current="page"] { color: var(--ink); }
+.site-header .nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
+  background: var(--accent);
+}
+
+/* Tombol hamburger minimalis: dua garis, berubah jadi "X" saat dibuka */
+.navbar-toggler {
+  border: 0;
+  border-radius: 0;
+  padding: 0.6rem 0.25rem;
+  width: 2.25rem;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+.navbar-toggler:focus { box-shadow: none; }
+.toggler-bar {
+  display: block;
+  height: 1.5px;
+  width: 100%;
+  background: var(--ink);
+  transition: transform 0.45s var(--ease), width 0.45s var(--ease);
+}
+.toggler-bar:last-child { width: 65%; }
+.navbar-toggler[aria-expanded="true"] .toggler-bar:first-child { transform: translateY(3.75px) rotate(45deg); }
+.navbar-toggler[aria-expanded="true"] .toggler-bar:last-child { width: 100%; transform: translateY(-3.75px) rotate(-45deg); }
+
+
+/* =========================================================================
+   06. LAYOUT SECTION & GARIS PEMISAH
+   ========================================================================= */
+.section {
+  padding-block: clamp(4rem, 9vw, 8rem);
+  border-top: 1px solid var(--line);
+}
+.section-tight { padding-block: clamp(3rem, 6vw, 5rem); }
+
+/* Kepala halaman (page hero) untuk halaman selain Home */
+.page-hero {
+  padding-top: clamp(3.5rem, 9vw, 7rem);
+  padding-bottom: clamp(3rem, 7vw, 5.5rem);
+}
+.page-hero .lede { margin-top: 2rem; }
+
+/* Baris meta berbentuk kolom kecil dengan garis atas (gaya kolofon majalah) */
+.meta-grid {
+  border-top: 1px solid var(--line);
+}
+.meta-grid > div {
+  padding-block: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+.meta-grid dt,
+.meta-grid .meta-k {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+.meta-grid dd,
+.meta-grid .meta-v { margin: 0; font-size: 0.98rem; }
+
+
+/* =========================================================================
+   07. HOME
+   ========================================================================= */
+.hero {
+  padding-top: clamp(2.5rem, 7vw, 5rem);
+  padding-bottom: clamp(3rem, 7vw, 5rem);
+}
+
+.hero-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Status "Terbuka untuk magang/kerja" dengan titik berdenyut halus */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink);
+}
+.status-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.status-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2.4s var(--ease) infinite;
+}
+
+.hero-name { margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2.25rem;
+}
+
+/* Banner/visual abstrak */
+.banner {
+  margin: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding-block: clamp(1.5rem, 4vw, 3rem);
+}
+.banner img {
+  width: 100%;
+  aspect-ratio: 4 / 1;
+  object-fit: cover;
+}
+.figcap {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+
+/* Kartu pengalaman unggulan */
+.feature {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.feature-num {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  padding-top: 1.25rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+}
+.feature-num span:last-child { color: var(--muted); }
+.feature h3 {
+  font-size: clamp(1.45rem, 2.2vw, 1.85rem);
+  margin: 0.75rem 0 0.5rem;
+}
+.feature p:not(.feature-num) { color: var(--muted); margin-bottom: 1.25rem; }
+.feature .feature-num { margin-bottom: 0; }
+.feature .more {
+  margin-top: auto;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+/* seluruh kartu bisa diklik, tapi foto tetap bereaksi saat kartu di-hover */
+.feature:hover .photo img { filter: grayscale(0%); transform: scale(1.03); }
+.feature:hover .more { background-size: 100% 1px; }
+
+/* Kutipan besar (pull quote) */
+.pull {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-style: italic;
+  margin: 0;
+}
+
+
+/* =========================================================================
+   08. FOTO — grayscale, berubah berwarna saat hover (transisi halus)
+   ========================================================================= */
+.photo {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  /* placeholder SVG sebagai latar: tetap rapi jika foto belum dimuat */
+  background: var(--bg-soft) url("../assets/img/placeholder.svg") center / cover no-repeat;
+}
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;          /* foto tidak gepeng */
+  filter: grayscale(100%) contrast(1.02);
+  transition: filter 0.9s var(--ease), transform 1.2s var(--ease);
+}
+.photo:hover img { filter: grayscale(0%); transform: scale(1.03); }
+
+/* Rasio konsisten */
+.ratio-portrait { aspect-ratio: 4 / 5; }
+.ratio-landscape { aspect-ratio: 4 / 3; }
+
+.photo-caption {
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+
+/* =========================================================================
+   09. HALAMAN TENTANG — layout dua kolom ala majalah
+   ========================================================================= */
+.sticky-col { position: sticky; top: 6.5rem; }
+
+/* Huruf pertama besar (drop cap) di paragraf pembuka */
+.dropcap::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-size: 5.2rem;
+  line-height: 0.82;
+  padding: 0.35rem 0.6rem 0 0;
+  color: var(--accent);
+}
+
+.story p { font-size: 1.075rem; margin-bottom: 1.4rem; }
+
+/* Teks dua kolom seperti majalah (hanya di layar lebar) */
+@media (min-width: 992px) {
+  .columns-2 { column-count: 2; column-gap: 3rem; }
+  .columns-2 p { break-inside: avoid; }
+}
+
+/* Daftar pendidikan / timeline berbentuk baris */
+.rows { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.rows > li {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.35rem 2rem;
+  padding-block: 1.75rem;
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 768px) {
+  .rows > li { grid-template-columns: 9rem 1fr auto; align-items: baseline; }
+}
+.rows .row-year { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.12em; color: var(--muted); }
+.rows .row-title { font-family: var(--font-serif); font-size: clamp(1.3rem, 2.2vw, 1.7rem); line-height: 1.2; margin: 0; }
+.rows .row-sub { color: var(--muted); margin: 0.35rem 0 0; }
+.rows .row-tag { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+
+/* Kartu nilai kerja bernomor */
+.value {
+  border-top: 1px solid var(--ink);
+  padding-top: 1.25rem;
+  height: 100%;
+}
+.value .num { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); letter-spacing: 0.14em; }
+.value h3 { font-size: 1.5rem; margin: 0.75rem 0 0.6rem; }
+.value p { color: var(--muted); margin: 0; }
+
+/* Tag sederhana */
+.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0; }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--line);
+  font-size: 0.9rem;
+  line-height: 1.2;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.tag:hover { border-color: var(--ink); }
+
+
+/* =========================================================================
+   10. HALAMAN PENGALAMAN — case study, galeri, modal
+   ========================================================================= */
+.case {
+  padding-block: clamp(3.5rem, 8vw, 6.5rem);
+  border-top: 1px solid var(--line);
+}
+.case-index {
+  font-family: var(--font-serif);
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+.case h2 { font-size: clamp(2rem, 4vw, 3.25rem); margin-bottom: 1.5rem; }
+.case h3 {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin: 2.5rem 0 1rem;
+}
+
+/* Daftar tugas dengan tanda garis */
+.dash-list { list-style: none; padding: 0; margin: 0; }
+.dash-list li {
+  position: relative;
+  padding-left: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+/* penanda poin: kotak kecil warna aksen */
+.dash-list li::before {
+  content: "";
+  position: absolute;
+  left: 0.15rem;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+
+/* Angka dampak besar */
+.impact { border-top: 1px solid var(--line); padding-top: 1rem; height: 100%; }
+.impact .impact-num {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.impact-num sup { font-size: 0.45em; color: var(--accent); top: -0.9em; margin-left: 0.1em; }
+.impact p:not(.impact-num) { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+
+/* Galeri: thumbnail berupa tombol pembuka modal */
+.gallery-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  text-align: left;
+}
+.gallery-btn .photo { aspect-ratio: 4 / 3; }
+.gallery-btn:hover .photo img,
+.gallery-btn:focus-visible .photo img { filter: grayscale(0%); transform: scale(1.04); }
+
+/* Modal Bootstrap disesuaikan dengan tema */
+.modal-ed .modal-content {
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 0;
+}
+.modal-ed .modal-header,
+.modal-ed .modal-footer { border-color: var(--line); }
+.modal-ed .modal-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+.modal-ed .modal-body { padding: 0; }
+/* lebar modal mengikuti tinggi layar agar foto 4:3 selalu muat tanpa scroll */
+.modal-ed .modal-dialog { max-width: min(1140px, calc((100vh - 11rem) * 4 / 3), calc(100vw - 1rem)); margin-inline: auto; }
+/* foto di modal tampil utuh (tidak dipotong), termasuk foto portrait */
+.modal-ed .modal-body img { width: 100%; height: calc(100vh - 11rem); max-height: 75vw; object-fit: contain; background: var(--bg-soft); }
+.modal-ed .modal-footer { justify-content: flex-start; font-size: 0.95rem; color: var(--muted); }
+.modal-ed .btn-close { border-radius: 0; }
+@media (prefers-color-scheme: dark) {
+  .modal-ed .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+}
+.modal-backdrop.show { opacity: 0.85; }
+
+
+/* =========================================================================
+   11. HALAMAN KEAHLIAN — daftar & tag dengan level (tanpa progress bar)
+   ========================================================================= */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.legend > span { display: inline-flex; align-items: center; gap: 0.6rem; }
+
+/* Indikator level: tiga kotak kecil (bukan persentase) */
+.level {
+  display: inline-flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.level i {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--ink);
+}
+.level i.on { background: var(--ink); }
+.lvl-3 .level i { border-color: var(--accent); }
+.lvl-3 .level i.on { background: var(--accent); }
+
+/* Baris skill */
+.skill-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.skill-list li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25rem 1.5rem;
+  align-items: center;
+  padding-block: 1.15rem;
+  border-bottom: 1px solid var(--line);
+  transition: padding-left 0.45s var(--ease);
+}
+.skill-list li:hover { padding-left: 0.5rem; }
+.skill-name { font-family: var(--font-serif); font-size: clamp(1.2rem, 2vw, 1.45rem); line-height: 1.2; }
+.skill-note { grid-column: 1 / -1; color: var(--muted); font-size: 0.9rem; margin: 0; }
+.skill-level {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+@media (min-width: 768px) {
+  .skill-list li { grid-template-columns: 1fr 1.4fr 8.5rem; }   /* kolom level lebar tetap agar keterangan sejajar */
+  .skill-list .skill-level { justify-self: end; }
+  .skill-note { grid-column: auto; }
+}
+
+/* Tag tools dengan level */
+.tag-level { padding: 0.65rem 0.95rem; }
+.tag-level .level i { width: 5px; height: 5px; }
+
+
+/* =========================================================================
+   12. HALAMAN KONTAK
+   ========================================================================= */
+.email-xl {
+  display: inline-block;
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 7.5vw, 6rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  word-break: break-word;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2px;
+  transition: background-size 0.8s var(--ease), color 0.4s;
+  padding-bottom: 0.15em;
+}
+.email-xl:hover,
+.email-xl:focus-visible { background-size: 100% 2px; color: var(--accent); }
+
+/* Daftar tautan sosial berupa baris */
+.link-rows { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.link-rows a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding-block: 1.15rem;
+  border-bottom: 1px solid var(--line);
+  transition: padding 0.45s var(--ease), color 0.3s;
+}
+.link-rows .lr-name { font-family: var(--font-serif); font-size: 1.4rem; }
+.link-rows .lr-handle { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--muted); }
+.link-rows .arrow { display: inline-block; transition: transform 0.45s var(--ease); color: var(--accent); }
+.link-rows a:hover { padding-left: 0.5rem; }
+.link-rows a:hover .arrow { transform: translate(3px, -3px); }
+
+/* Form: hanya garis bawah, tanpa kotak */
+.form-ed .form-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+.form-ed .form-control {
+  background: transparent;
+  color: var(--ink);
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 0.6rem 0;
+  font-size: 1.05rem;
+  transition: border-color 0.3s;
+}
+.form-ed .form-control::placeholder { color: var(--muted); opacity: 0.7; }
+.form-ed .form-control:focus {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+.form-ed textarea.form-control { resize: vertical; min-height: 8rem; }
+.form-note { font-size: 0.85rem; color: var(--muted); }
+
+
+/* =========================================================================
+   13. FOOTER — sama di semua halaman
+   ========================================================================= */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding-top: clamp(4rem, 8vw, 6rem);
+  padding-bottom: 2rem;
+}
+.footer-cta {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+}
+.footer-list { list-style: none; padding: 0; margin: 0; }
+.footer-list li { margin-bottom: 0.5rem; }
+.footer-bottom {
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+
+/* =========================================================================
+   14. ANIMASI MASUK — fade + naik sedikit, dengan jeda bertahap
+   ========================================================================= */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes reveal-img {
+  from { opacity: 0; clip-path: inset(0 0 100% 0); }
+  to   { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+@keyframes pulse {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  70%  { transform: scale(2.6); opacity: 0; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+.reveal { animation: rise 0.9s var(--ease) both; }
+.reveal-img { animation: reveal-img 1.3s var(--ease) both; }
+
+/* Jeda bertahap (stagger) */
+.d-1 { animation-delay: 0.08s; }
+.d-2 { animation-delay: 0.16s; }
+.d-3 { animation-delay: 0.24s; }
+.d-4 { animation-delay: 0.32s; }
+.d-5 { animation-delay: 0.40s; }
+.d-6 { animation-delay: 0.48s; }
+
+
+/* =========================================================================
+   15. RESPONSIF TAMBAHAN
+   ========================================================================= */
+/* HP & tablet: menu hasil collapse ditampilkan sebagai daftar vertikal besar */
+@media (max-width: 991.98px) {
+  .site-header .navbar-collapse { padding-block: 1rem 0.5rem; }
+  .site-header .nav-link {
+    margin-left: 0;
+    padding: 0.9rem 0 !important;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header .nav-link::after { display: none; }
+  .site-header .nav-link[aria-current="page"] { color: var(--accent); }
+  .sticky-col { position: static; }
+}
+
+@media (max-width: 575.98px) {
+  .brand-name { display: none; }      /* sisakan logo saja di HP kecil */
+  .btn-ed { width: 100%; justify-content: space-between; }
+  .banner img { aspect-ratio: 2 / 1; }
+  .figcap { flex-direction: column; gap: 0.25rem; }
+}
+
+
+/* =========================================================================
+   16. PREFERS-REDUCED-MOTION — hormati pengguna yang tidak ingin animasi
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+  }
+  .status-dot::after { display: none; }
+}
+
+/* Foto portrait di thumbnail: geser potongan ke bagian atas foto */
+.photo img.focus-top { object-position: center 22%; }

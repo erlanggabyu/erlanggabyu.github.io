@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" width="1600" height="400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Komposisi geometris abstrak">
+  <!-- BANNER ABSTRAK — komposisi bentuk geometris minimalis dengan satu warna aksen -->
+  <style>
+    .ln { stroke: #141414; stroke-opacity: .16; stroke-width: 1; fill: none; }
+    .ink { fill: #141414; }
+    .stroke { stroke: #141414; stroke-width: 1.25; fill: none; }
+    .acc { fill: #d4552b; }
+    .acc-s { stroke: #d4552b; stroke-width: 1.25; fill: none; }
+    .lbl { fill: #6b6b6b; font-family: Consolas, "Courier New", monospace; font-size: 11px; letter-spacing: 3px; }
+    @media (prefers-color-scheme: dark) {
+      .ln { stroke: #eeeeee; } .ink { fill: #eeeeee; } .stroke { stroke: #eeeeee; } .lbl { fill: #a3a3a3; }
+    }
+  </style>
+
+  <!-- grid garis tipis -->
+  <g class="ln">
+    <line x1="0" y1="100" x2="1600" y2="100"/>
+    <line x1="0" y1="300" x2="1600" y2="300"/>
+    <line x1="200" y1="0" x2="200" y2="400"/>
+    <line x1="600" y1="0" x2="600" y2="400"/>
+    <line x1="1000" y1="0" x2="1000" y2="400"/>
+    <line x1="1400" y1="0" x2="1400" y2="400"/>
+  </g>
+
+  <!-- lingkaran aksen besar -->
+  <circle class="acc" cx="400" cy="200" r="150"/>
+  <!-- setengah lingkaran garis -->
+  <path class="stroke" d="M 600 350 A 150 150 0 0 1 900 350"/>
+  <path class="stroke" d="M 640 350 A 110 110 0 0 1 860 350"/>
+  <!-- persegi solid & persegi garis -->
+  <rect class="ink" x="1000" y="100" width="200" height="200"/>
+  <rect class="stroke" x="1100" y="50" width="200" height="200"/>
+  <!-- seperempat lingkaran aksen -->
+  <path class="acc-s" d="M 1400 300 A 200 200 0 0 1 1600 100"/>
+  <path class="acc-s" d="M 1400 260 A 160 160 0 0 1 1560 100"/>
+  <!-- titik kecil -->
+  <circle class="ink" cx="200" cy="100" r="4"/>
+  <circle class="ink" cx="1400" cy="300" r="4"/>
+  <rect class="acc" x="1296" y="296" width="8" height="8"/>
+  <!-- garis diagonal -->
+  <line class="stroke" x1="40" y1="340" x2="160" y2="60"/>
+
+  <text class="lbl" x="212" y="88">FIG. 01</text>
+  <text class="lbl" x="1412" y="388">S 06°12′ · E 106°49′</text>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+  <!-- Placeholder minimalis: tampil sebagai latar bingkai foto sebelum foto asli dimuat -->
+  <rect width="400" height="300" fill="#e4e1db"/>
+  <g fill="none" stroke="#c9c5bd" stroke-width="1">
+    <line x1="0" y1="0" x2="400" y2="300"/>
+    <line x1="400" y1="0" x2="0" y2="300"/>
+    <circle cx="200" cy="150" r="46"/>
+  </g>
+  <text x="200" y="285" text-anchor="middle" fill="#8a867f" font-family="Consolas, monospace" font-size="10" letter-spacing="2">FOTO</text>
+</svg>

@@ -1,0 +1,10 @@
+# Cadangan foto asli berukuran besar (tidak perlu ikut di-upload)
+_foto-asli/
+
+# Konfigurasi preview lokal Claude Code
+.claude/
+
+# File sistem
+Thumbs.db
+desktop.ini
+.DS_Store

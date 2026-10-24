@@ -106,7 +106,17 @@
             <p class="section-label"><span class="num">02</span> / Kirim pesan</p>
             <h2 class="title-md mb-4">Atau tinggalkan pesan singkat.</h2>
 
-            <form class="form-ed" action="mailto:anggaerlss@icloud.com" method="post" enctype="text/plain">
+            <!-- Pesan muncul setelah form berhasil terkirim (tampil lewat CSS :target) -->
+            <p id="terkirim" class="form-success" role="status">Terima kasih, pesan Anda sudah terkirim. Saya akan membalas secepatnya.</p>
+
+            <form class="form-ed" action="https://formsubmit.co/anggaerlss@icloud.com" method="post">
+              <!-- Pengaturan FormSubmit (layanan pengirim form gratis) -->
+              <input type="hidden" name="_subject" value="Pesan baru dari website CV">
+              <input type="hidden" name="_template" value="table">
+              <input type="hidden" name="_captcha" value="false">
+              <input type="hidden" name="_next" value="https://erlanggabyu.github.io/kontak.html#terkirim">
+              <input type="text" name="_honey" class="d-none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
               <div class="row g-4">
                 <div class="col-md-6">
                   <label for="nama" class="form-label">Nama</label>
@@ -114,7 +124,7 @@
                 </div>
                 <div class="col-md-6">
                   <label for="email" class="form-label">Email</label>
-                  <input type="email" class="form-control" id="email" name="Email" placeholder="anda@perusahaan.com" autocomplete="email" required>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="anda@perusahaan.com" autocomplete="email" required>
                 </div>
                 <div class="col-12">
                   <label for="perusahaan" class="form-label">Perusahaan / Instansi <span class="text-lowercase">(opsional)</span></label>
@@ -126,7 +136,7 @@
                 </div>
                 <div class="col-12 d-flex flex-wrap align-items-center gap-3">
                   <button type="submit" class="btn-ed btn-outline">Kirim Pesan <span class="arrow" aria-hidden="true">→</span></button>
-                  <p class="form-note mb-0">Tombol ini membuka aplikasi email Anda. Bisa juga langsung ke <a class="link-line" href="mailto:anggaerlss@icloud.com">anggaerlss@icloud.com</a>.</p>
+                  <p class="form-note mb-0">Pesan langsung terkirim ke email saya. Bisa juga menghubungi <a class="link-line" href="mailto:anggaerlss@icloud.com">anggaerlss@icloud.com</a>.</p>
                 </div>
               </div>
             </form>

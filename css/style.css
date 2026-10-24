@@ -971,3 +971,13 @@ a:hover { color: var(--ink); }
 
 /* Foto portrait di thumbnail: geser potongan ke bagian atas foto */
 .photo img.focus-top { object-position: center 22%; }
+
+/* Pesan "terkirim" di halaman Kontak: tersembunyi, muncul saat URL berakhiran #terkirim */
+.form-success {
+  display: none;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg-soft);
+}
+.form-success:target { display: block; }
